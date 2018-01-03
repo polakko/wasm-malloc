@@ -2,11 +2,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "memory.h"
 #include "mm.h"
 #include "print.h"
 
 #define PAGE_SIZE (64 * 1024)
+#define MM_DEBUG 1
 
 struct block_info {
 	struct block_info *previous;
@@ -21,6 +21,23 @@ static uintptr_t heap_top;
 static struct block_info *first_block;
 static struct block_info *last_block;
 static struct block_info *first_free_block;
+
+size_t grow_memory(size_t pages) {
+	size_t oldpages;
+	oldpages = __builtin_wasm_grow_memory(pages);
+#ifdef MM_DEBUG
+	if (pages) {
+		size_t newpages = __builtin_wasm_current_memory();
+		prints("Grew memory from ");
+		printi(oldpages);
+		prints(" to ");
+		printi(newpages);
+		prints(" pages");
+		printc('\n');
+	}
+#endif
+	return oldpages;
+}
 
 uintptr_t grow_heap(size_t inc) {
 	uintptr_t old_heap_top = heap_top;
