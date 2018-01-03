@@ -8,20 +8,16 @@ Because the WebAssembly MVP does not support shrinking the linear memory, freed 
 
 ## Building
 
-This requires llvm (compiled with the wasm32 target, see [this gist](https://gist.github.com/yurydelendik/4eeff8248aeb14ce763e)), wabt and binaryen. The path to the llvm bin directory has to be adjusted in the compile script. wabt and 
-binaryen must be accessible through the path.
+This requires llvm (compiled with the wasm32 target, see [this gist](https://gist.github.com/yurydelendik/4eeff8248aeb14ce763e)), wabt and binaryen. The llvm, wabt and binaryen must be accessible through the path.
 
 ```
 mkdir build
 CFLAGS=-O2 ./compile build/main.wasm src/mm.c src/main.c
 ```
 
-Debugging information can be enabled with the preprocessor macro `MM_DEBUG`. This also adds the function `print_heap()` which prints the current layout of the 
-heap to the browser console.
+Debugging information can be enabled with the preprocessor macro `MM_DEBUG`. This also adds the function `print_heap()` which prints the current layout of the heap to the browser console.
 
 ## Usage
-
-**Sadly Google Chrome currently has a bug which causes the tab to crash if `WebAssembly.Memory#grow()` is being called from WebAssembly. It works in Mozilla Firefox, I haven't tested it in other browsers.**
 
 The functions can be invoked in JavaScript as `instance.exports.malloc()/calloc()/free()`.
 
